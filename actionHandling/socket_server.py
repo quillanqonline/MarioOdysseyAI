@@ -1,13 +1,20 @@
 import asyncio
 from websockets.asyncio.server import serve
+import websockets
 import random
+import json
 
 class SocketServer:
-    clients = []
+    connected_clients = set()
 
     async def connectionReceived(self, websocket):
         print(f"Received connection from {websocket}")
-        self.clients.append(websocket)
+        self.connected_clients.add(websocket)
+        try:
+            async for message in websocket:
+                pass
+        finally:
+            self.connected_clients.remove(websocket)
 
 
     async def startServer(self):
@@ -16,19 +23,34 @@ class SocketServer:
 
     
     async def sendAction(self, action):
-        for client in self.clients:
-            await client.send(action)
+        actionObject = {
+            "message": {
+                "text": action
+            }
+        }
+        for client in self.connected_clients:
+            try:
+                await client.send(json.dumps(actionObject))
+            except websockets.exceptions.ConnectionClosed:
+                # Handle disconnection if needed
+                self.connected_clients.remove(client)
 
 
 async def testAction(server: SocketServer):
-    actions = ["left", "right", "up", "down", "a", "y", "zr", "zl", "rleft", "rright", "rup", "rdown"]
+    actions = ["sb1", "sb2", "sb3", "sb4", "a", "y", "zr", "zl", "sb5", "sb6", "sb7", "sb8"]
     while True:
         await asyncio.sleep(1)
         randomAction = random.choice(actions)
-        server.sendAction(randomAction)
+        print(f'Sending command: ' + randomAction)
+        await server.sendAction(randomAction)
+
+async def main():
+    socketServer = SocketServer()
+    await asyncio.gather(
+        socketServer.startServer(),
+        testAction(socketServer),
+        # Add other concurrent tasks here if needed
+    )
 
 if __name__ == "__main__":
-    socketServer = SocketServer()
-    asyncio.run(socketServer.startServer())
-    asyncio.run(testAction(socketServer))
-
+    asyncio.run(main())

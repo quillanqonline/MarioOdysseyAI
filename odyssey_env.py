@@ -130,14 +130,14 @@ class MarioOdysseyEnv(gym.Env):
         leftJoystickYAxis = leftJoystickAction[1]
         
         if leftJoystickXAxis < 5:
-            commandBuilder.append("left")
+            commandBuilder.append("sb4")
         elif leftJoystickXAxis > 5:
-            commandBuilder.append("right")
+            commandBuilder.append("sb2")
         
         if leftJoystickYAxis < 5:
-            commandBuilder.append("down")
+            commandBuilder.append("sb3")
         elif leftJoystickYAxis > 5:
-            commandBuilder.append("up")
+            commandBuilder.append("sb1")
 
         jump = action[1] == 1
         if jump:
@@ -160,14 +160,14 @@ class MarioOdysseyEnv(gym.Env):
         rightJoystickYAxis = rightJoystickAction[1]
 
         if rightJoystickXAxis < 5:
-            commandBuilder.append("rleft")
+            commandBuilder.append("sb8")
         elif rightJoystickXAxis > 5:
-            commandBuilder.append("rright")
+            commandBuilder.append("sb6")
         
         if rightJoystickYAxis < 5:
-            commandBuilder.append("rdown")
+            commandBuilder.append("sb7")
         elif rightJoystickYAxis > 5:
-            commandBuilder.append("rup")
+            commandBuilder.append("sb5")
 
         return '+'.join(commandBuilder)
 
