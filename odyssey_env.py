@@ -2,15 +2,14 @@ from typing import Optional
 import numpy as np
 import gymnasium as gym
 from odyssey_wrapper import OdysseyWrapper
-
-imageWidth = 100
-imageHeight = 100
+from image_size import WIDTH
+from image_size import HEIGHT
 
 class MarioOdysseyEnv(gym.Env):
     coinBonus = 50
     regionalCoinBonus = 70
     moonBonus = 100
-    kingdomVisitedBonus = 1_000
+    kingdomVisitedBonus = 200
     gameCompleteBonus = 1_000_000
 
     def __init__(self):
@@ -54,14 +53,14 @@ class MarioOdysseyEnv(gym.Env):
             "gameCleared": gym.spaces.Discrete(2),
 
             # The most recent frames
-            "currentFrame": gym.spaces.Box(0, 255, (imageHeight, imageWidth, 3), dtype=np.uint8),
-            "previousFrame1": gym.spaces.Box(0, 255, (imageHeight, imageWidth, 3), dtype=np.uint8),
-            "previousFrame2": gym.spaces.Box(0, 255, (imageHeight, imageWidth, 3), dtype=np.uint8),
-            "previousFrame3": gym.spaces.Box(0, 255, (imageHeight, imageWidth, 3), dtype=np.uint8),
-            "previousFrame4": gym.spaces.Box(0, 255, (imageHeight, imageWidth, 3), dtype=np.uint8),
-            "previousFrame5": gym.spaces.Box(0, 255, (imageHeight, imageWidth, 3), dtype=np.uint8),
-            "previousFrame6": gym.spaces.Box(0, 255, (imageHeight, imageWidth, 3), dtype=np.uint8),
-            "previousFrame7": gym.spaces.Box(0, 255, (imageHeight, imageWidth, 3), dtype=np.uint8),
+            "currentFrame": gym.spaces.Box(0, 255, (WIDTH, HEIGHT, 3), dtype=np.uint8),
+            "previousFrame1": gym.spaces.Box(0, 255, (WIDTH, HEIGHT, 3), dtype=np.uint8),
+            "previousFrame2": gym.spaces.Box(0, 255, (WIDTH, HEIGHT, 3), dtype=np.uint8),
+            "previousFrame3": gym.spaces.Box(0, 255, (WIDTH, HEIGHT, 3), dtype=np.uint8),
+            "previousFrame4": gym.spaces.Box(0, 255, (WIDTH, HEIGHT, 3), dtype=np.uint8),
+            "previousFrame5": gym.spaces.Box(0, 255, (WIDTH, HEIGHT, 3), dtype=np.uint8),
+            "previousFrame6": gym.spaces.Box(0, 255, (WIDTH, HEIGHT, 3), dtype=np.uint8),
+            "previousFrame7": gym.spaces.Box(0, 255, (WIDTH, HEIGHT, 3), dtype=np.uint8),
         }
 
         self.observation_space = gym.spaces.Dict(observationSpace)

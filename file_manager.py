@@ -2,6 +2,8 @@ import PIL
 from PIL import ImageGrab
 from PIL import Image
 import numpy as np
+from image_size import WIDTH
+from image_size import HEIGHT
 
 class ScreenshotManager:
     previous_screenshot_title = "screenshots/previous_screenshot_"
@@ -38,8 +40,13 @@ class ScreenshotManager:
 
     
     def get_image(source):
-        image = Image.open(source)
-        return np.array(image)
+        try:
+            image = Image.open(source)
+            return np.array(image)
+        except:
+            img_rgb = Image.new('RGB', (WIDTH, HEIGHT), (0, 0, 0))
+            return np.array()
+        
     
 
     def get_previous_image_name(number: int):
