@@ -30,7 +30,7 @@ class MarioOdysseyEnv(gym.Env):
         # Crouch Button: [2]
         # Action Button: [2]
         # Release Cappy Button: [2]
-        # Right Joy Stick: [11]
+        # Right Joy Stick: [11, 11]
 
         actionSpace = np.array([[11, 11], 2, 2, 2, 2, [11, 11]])
         self.action_space = gym.spaces.MultiDiscrete(actionSpace)
@@ -97,8 +97,8 @@ class MarioOdysseyEnv(gym.Env):
     
 
     def step(self, action):
-        # TODO: Take action through wrapper
-        
+        actionCommand = self.defineActionCommand(action)
+        self.odyssey_wrapper.send_action(actionCommand)
 
         terminated = self.odyssey_wrapper.game_cleared
         truncated = False
@@ -106,3 +106,68 @@ class MarioOdysseyEnv(gym.Env):
         reward = self._calculate_reward(observation)
         info = self._get_info()
         return observation, reward, terminated, truncated, info
+
+
+    def defineActionCommand(self, action):
+        # Left Joy Stick: [11, 11]
+        # Jump Button: [2]
+        # Crouch Button: [2]
+        # Action Button: [2]
+        # Release Cappy Button: [2]
+        # Right Joy Stick: [11, 11]  
+        #       
+        # Left Joystick to move
+        # Right Joystick to control camera
+        # A to jump
+        # Y to action
+        # ZR to crouch
+        # ZL to release cappy
+
+        commandBuilder = []
+
+        leftJoystickAction = action[0]
+        leftJoystickXAxis = leftJoystickAction[0]
+        leftJoystickYAxis = leftJoystickAction[1]
+        
+        if leftJoystickXAxis < 5:
+            commandBuilder.append("left")
+        elif leftJoystickXAxis > 5:
+            commandBuilder.append("right")
+        
+        if leftJoystickYAxis < 5:
+            commandBuilder.append("down")
+        elif leftJoystickYAxis > 5:
+            commandBuilder.append("up")
+
+        jump = action[1] == 1
+        if jump:
+            commandBuilder.append("a")
+
+        crouch = action[2] == 1
+        if crouch:
+            commandBuilder.append("zr")
+
+        actionButton = action[3] == 1
+        if actionButton:
+            commandBuilder.append("y")
+
+        releaseCappy = action[4] == 1
+        if releaseCappy:
+            commandBuilder.append("zl")
+
+        rightJoystickAction = action[0]
+        rightJoystickXAxis = rightJoystickAction[0]
+        rightJoystickYAxis = rightJoystickAction[1]
+
+        if rightJoystickXAxis < 5:
+            commandBuilder.append("rleft")
+        elif rightJoystickXAxis > 5:
+            commandBuilder.append("rright")
+        
+        if rightJoystickYAxis < 5:
+            commandBuilder.append("rdown")
+        elif rightJoystickYAxis > 5:
+            commandBuilder.append("rup")
+
+        return '+'.join(commandBuilder)
+

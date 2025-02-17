@@ -1,5 +1,6 @@
 from odyssey_kingdoms import MarioOdysseyKingdoms
 from file_manager import ScreenshotManager
+from actionHandling.socket_server import SocketServer
 import asyncio
 
 class OdysseyWrapper:
@@ -7,19 +8,21 @@ class OdysseyWrapper:
     coin_count = 0
     moon_count = 0
     regional_coins = {}
-    visited_kingdoms = 0
+    visited_kingdoms = 1
     current_kingdom = MarioOdysseyKingdoms.CAP
     taking_screenshots = False
     game_cleared = False
+    socketServer: SocketServer = None
 
     def __init__(self):
+        self.start_action_server()
         self.reset()
 
 
     def reset(self):
         self.taking_screenshots = False
         self.regional_coins = { MarioOdysseyKingdoms.CAP: 0 }
-        self.visited_kingdoms = 0
+        self.visited_kingdoms = 1
         self.coin_count = 0
         self.moon_count = 0
         self.game_cleared = False
@@ -68,3 +71,13 @@ class OdysseyWrapper:
 
     def calculate_collected_regional_coins(self):
         return sum(self.regional_coins.values())
+    
+
+    def start_action_server(self):
+        self.socketServer = SocketServer()
+        asyncio.run(self.socketServer.startServer())
+
+
+    def send_action(self, action):
+        if self.socketServer:
+            self.socketServer.sendAction(action)
