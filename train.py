@@ -1,5 +1,5 @@
 import gymnasium
-from odyssey_env import MarioOdysseyEnv
+from envs.odyssey_env import MarioOdysseyEnv
 from stable_baselines3 import PPO
 import os
 

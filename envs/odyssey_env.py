@@ -31,7 +31,7 @@ class MarioOdysseyEnv(gym.Env):
         # Release Cappy Button: [2]
         # Right Joy Stick: [11, 11]
 
-        actionSpace = np.array([[11, 11], 2, 2, 2, 2, [11, 11]])
+        actionSpace = np.array([11, 11, 2, 2, 2, 2, 11, 11])
         self.action_space = gym.spaces.MultiDiscrete(actionSpace)
 
         # Observation space will include the 8 most recent frames
@@ -108,12 +108,14 @@ class MarioOdysseyEnv(gym.Env):
 
 
     def defineActionCommand(self, action):
-        # Left Joy Stick: [11, 11]
+        # Left Joy Stick X Axis: [11]
+        # Left Joy Stick Y Axis: [11]
         # Jump Button: [2]
         # Crouch Button: [2]
         # Action Button: [2]
         # Release Cappy Button: [2]
-        # Right Joy Stick: [11, 11]  
+        # Right Joy Stick X Axis: [11]  
+        # Right Joy Stick Y Axis: [11]  
         #       
         # Left Joystick to move
         # Right Joystick to control camera
@@ -124,9 +126,8 @@ class MarioOdysseyEnv(gym.Env):
 
         commandBuilder = []
 
-        leftJoystickAction = action[0]
-        leftJoystickXAxis = leftJoystickAction[0]
-        leftJoystickYAxis = leftJoystickAction[1]
+        leftJoystickXAxis = action[0]
+        leftJoystickYAxis = action[1]
         
         if leftJoystickXAxis < 5:
             commandBuilder.append("sb4")
@@ -138,25 +139,24 @@ class MarioOdysseyEnv(gym.Env):
         elif leftJoystickYAxis > 5:
             commandBuilder.append("sb1")
 
-        jump = action[1] == 1
+        jump = action[2] == 1
         if jump:
             commandBuilder.append("a")
 
-        crouch = action[2] == 1
+        crouch = action[3] == 1
         if crouch:
             commandBuilder.append("zr")
 
-        actionButton = action[3] == 1
+        actionButton = action[4] == 1
         if actionButton:
             commandBuilder.append("y")
 
-        releaseCappy = action[4] == 1
+        releaseCappy = action[5] == 1
         if releaseCappy:
             commandBuilder.append("zl")
 
-        rightJoystickAction = action[0]
-        rightJoystickXAxis = rightJoystickAction[0]
-        rightJoystickYAxis = rightJoystickAction[1]
+        rightJoystickXAxis = action[6]
+        rightJoystickYAxis = action[7]
 
         if rightJoystickXAxis < 5:
             commandBuilder.append("sb8")
